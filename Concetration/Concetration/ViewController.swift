@@ -17,7 +17,13 @@ enum Emoji: String {
 class ViewController: UIViewController {
     
     private let countLabelText = "Счетчик нажатий:"
-    private var count = 0
+    private var count = 0 {
+        didSet {
+            self.countLabel.text = "\(countLabelText) \(self.count)"
+        }
+    }
+    
+    lazy var game = Concentration(numberPairsOfCard: self.cardButtons.count / 2)
     
     @IBOutlet var cardButtons: [UIButton]!
     
@@ -34,14 +40,11 @@ class ViewController: UIViewController {
             print("Unhandled Error!!!")
         }
         
-        
     }
     
     func flipCard(withEmoji emoji: String, on button: UIButton) {
-        
+                
         self.count += 1
-        
-        self.countLabel.text = "\(countLabelText) \(self.count)"
         
         if button.currentTitle == emoji {
             button.setTitle("", for: .normal)

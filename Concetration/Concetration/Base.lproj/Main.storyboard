@@ -81,6 +81,7 @@
                         <outlet property="countLabel" destination="MfD-7I-gFt" id="4ly-NX-vMg"/>
                         <outletCollection property="cardButtons" destination="NF5-Dg-3T9" collectionClass="NSMutableArray" id="HZK-3q-huN"/>
                         <outletCollection property="cardButtons" destination="0wb-lP-GQr" collectionClass="NSMutableArray" id="3Nf-gA-gT0"/>
+                        <outletCollection property="cardButtons" destination="dF3-pV-9Ep" collectionClass="NSMutableArray" id="hBB-hW-S3U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
