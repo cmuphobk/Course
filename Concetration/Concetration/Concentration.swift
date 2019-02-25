@@ -2,7 +2,7 @@
 //  Concentration.swift
 //  Concetration
 //
-//  Created by Кирилл Смирнов on 20/02/2019.
+//  Created by Кирилл Смирнов on 25/02/2019.
 //  Copyright © 2019 asu. All rights reserved.
 //
 
@@ -10,42 +10,45 @@ import Foundation
 
 class Concentration {
     
-    var cards: [Card]
+    var cards = [Card]()
     
     var indexOfOneAndOnlyFaceUpCard: Int?
     
     func chooseCard(at index: Int) {
         
-        //проверяем не сопало ли уже
+        //Если уже не совпавшие
         if !self.cards[index].isMatched {
-            //если перевернутая карта есть и она не та, на которую нажали только что
+            
+            //Если есть предыдущи индекс и он не равен новому
             if let matchIndex = self.indexOfOneAndOnlyFaceUpCard, matchIndex != index {
-                //проверяем если identifier перевернутой сейчас и до этого совпали
+                //Если индексы перевернутой и текущей совпадают, матчим их
                 if self.cards[matchIndex].identifier == self.cards[index].identifier {
                     self.cards[matchIndex].isMatched = true
                     self.cards[index].isMatched = true
                 }
+                //Текущую переварачиваем
                 self.cards[index].isFaceUp = true
                 self.indexOfOneAndOnlyFaceUpCard = nil
+                
             } else {
-                //если нет карт или две карты лицом вверх
+                //Если обе перевернуты или ни одной
                 for flipDownIndex in self.cards.indices {
                     self.cards[flipDownIndex].isFaceUp = false
                 }
                 self.cards[index].isFaceUp = true
                 self.indexOfOneAndOnlyFaceUpCard = index
             }
+            
         }
-        
+
     }
     
-    init(numberOfPairsOfCards: Int) {
-        self.cards =  [Card]()
-        for _ in 1...numberOfPairsOfCards {
+    init(numberOfPairsCard: Int) {
+        for _ in 0..<numberOfPairsCard {
             let card = Card()
             self.cards += [card, card]
         }
-        //TODO: перемешать карты
+        //TODO: Перемешать карты
     }
     
 }
