@@ -12,6 +12,10 @@ enum Emoji: String {
     case smile = "😀"
     case cry = "😭"
     case scream = "😱"
+    case love = "😍"
+    case cool = "😎"
+    case botan = "🤓"
+    case angel = "😇"
 }
 
 class ViewController: UIViewController {
@@ -26,19 +30,24 @@ class ViewController: UIViewController {
         
     }
     
-    lazy var game = Concentration(numberPairsOfCards: self.cardButtons.count/2) 
+    lazy var game = Concentration(numberPairsOfCards: (self.cardButtons.count + 1) / 2 )
     
     @IBOutlet var cardButtons: [UIButton]!
     
-    let emojiArray: [Emoji] = [.smile, .cry, .scream]
+    var emojiArray: [Emoji] = [.smile, .cry, .scream, .love, .cool, .botan, .angel]
+    var emoji: [Int: Emoji] = [:]
     
     @IBOutlet weak var countLabel: UILabel!
     
     @IBAction func emojiButtonAction(_ sender: UIButton) {
         
+        self.count += 1
+        
         if let index = self.cardButtons.firstIndex(of: sender) {
-            let emoji = self.emojiArray[index]
-            self.flipCard(withEmoji: emoji.rawValue, on: sender)
+            
+            self.game.chooseCard(at: index)
+            self.updateViewModel()
+            
         } else {
             print("Unhandled Error!!!")
         }
@@ -46,16 +55,31 @@ class ViewController: UIViewController {
         
     }
     
-    func flipCard(withEmoji emoji: String, on button: UIButton) {
+    func emoji(for card: Card) -> String {
         
-        self.count += 1
+        if self.emoji[card.identifier] == nil, self.emojiArray.count > 0 {
+            let randomIndex = Int(arc4random_uniform(UInt32(self.emojiArray.count)))
+            self.emoji[card.identifier] = self.emojiArray.remove(at: randomIndex)
+        }
         
-        if button.currentTitle == emoji {
-            button.setTitle("", for: .normal)
-            button.backgroundColor = #colorLiteral(red: 1, green: 0.6910475492, blue: 0, alpha: 1)
-        } else {
-            button.setTitle(emoji, for: .normal)
-            button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        return self.emoji[card.identifier]?.rawValue ?? "?"
+    }
+    
+    func updateViewModel() {
+        
+        for index in self.cardButtons.indices {
+            
+            let button = self.cardButtons[index]
+            let card = self.game.cards[index]
+            
+            if card.isFaceUp {
+                button.setTitle(self.emoji(for: card), for: .normal)
+                button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+            } else {
+                button.setTitle("", for: .normal)
+                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 0.6910475492, blue: 0, alpha: 0) : #colorLiteral(red: 1, green: 0.6910475492, blue: 0, alpha: 1)
+            }
+            
         }
         
     }
