@@ -15,10 +15,16 @@ struct Card {
     var identifier: Int
     
     static var identifierFactory = 0
+    
+    
+    /// Присваивает уникальный идентификатор
+    ///
+    /// - Returns: идентификатиор
     static func getUniqueIdentifier() -> Int {
         Card.identifierFactory += 1
         return identifierFactory
     }
+    
     
     init(identifier: Int) {
         self.identifier = Card.getUniqueIdentifier()
@@ -26,14 +32,4 @@ struct Card {
         
     }
     
-}
-
-struct Person {
-    let age: Int
-    let age2: Int
-    
-    init(a: String){
-        self.age = 0
-        self.age2 = 0
-    }
 }
