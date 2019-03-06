@@ -17,30 +17,33 @@ enum Emoji: String, CaseIterable {
     case love = "😍"
     case cool = "😎"
     case botan = "🤓"
-    
-    
+
 }
 
 class ViewController: UIViewController {
     
     private let countLabelText = "Счетчик нажатий:"
     
-    private var count = 0 {
+    private(set) var count = 0 {
         didSet {
             self.countLabel.text = "\(countLabelText) \(self.count)"
         }
     }
     
-    lazy var game = Concentration(numberOfPairsCard: (self.cardButtons.count + 1) / 2)
+    private lazy var game = Concentration(numberOfPairsCard: self.numberOfPairsCard)
     
-    @IBOutlet var cardButtons: [UIButton]!
+    var numberOfPairsCard: Int {
+        return (self.cardButtons.count + 1) / 2
+    }
     
-    var emojiArray: [Emoji] = Emoji.allCases
-    var emoji: [Int: Emoji] = [:]
+    @IBOutlet private var cardButtons: [UIButton]!
     
-    @IBOutlet weak var countLabel: UILabel!
+    private var emojiArray: [Emoji] = Emoji.allCases
+    private var emoji: [Int: Emoji] = [:]
     
-    @IBAction func emojiButtonAction(_ sender: UIButton) {
+    @IBOutlet private weak var countLabel: UILabel!
+    
+    @IBAction private func emojiButtonAction(_ sender: UIButton) {
         
         if let index = self.cardButtons.firstIndex(of: sender) {
             self.game.chooseCard(at: index)
@@ -51,7 +54,7 @@ class ViewController: UIViewController {
         
     }
     
-    func updateViewModel() {
+    private func updateViewModel() {
         for index in self.cardButtons.indices {
             let button = self.cardButtons[index]
             let card = self.game.cards[index]
@@ -66,10 +69,9 @@ class ViewController: UIViewController {
         }
     }
     
-    func emoji(for card: Card) -> String {
+    private func emoji(for card: Card) -> String {
         if self.emoji[card.identifier] == nil, self.emojiArray.count > 0 {
-            let randomIndex = Int(arc4random_uniform(UInt32(self.emojiArray.count)))
-            self.emoji[card.identifier] = self.emojiArray.remove(at: randomIndex)
+            self.emoji[card.identifier] = self.emojiArray.remove(at: self.emojiArray.count.arc4random)
         }
         
         return self.emoji[card.identifier]?.rawValue ?? "?"

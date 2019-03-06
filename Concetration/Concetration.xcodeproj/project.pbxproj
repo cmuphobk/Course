@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		411E233F22246ACF0003CEE0 /* Concentration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411E233E22246ACF0003CEE0 /* Concentration.swift */; };
 		411E234222246B420003CEE0 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411E234122246B420003CEE0 /* Card.swift */; };
+		411E2346222FB3B80003CEE0 /* Int+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411E2345222FB3B80003CEE0 /* Int+Random.swift */; };
 		41A6B8832212A4360023CE19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A6B8822212A4360023CE19 /* AppDelegate.swift */; };
 		41A6B8852212A4360023CE19 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A6B8842212A4360023CE19 /* ViewController.swift */; };
 		41A6B8882212A4360023CE19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 41A6B8862212A4360023CE19 /* Main.storyboard */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		411E233E22246ACF0003CEE0 /* Concentration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Concentration.swift; sourceTree = "<group>"; };
 		411E234122246B420003CEE0 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		411E2345222FB3B80003CEE0 /* Int+Random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Random.swift"; sourceTree = "<group>"; };
 		41A6B87F2212A4360023CE19 /* Concetration.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Concetration.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41A6B8822212A4360023CE19 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		41A6B8842212A4360023CE19 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				41A6B8842212A4360023CE19 /* ViewController.swift */,
 				41A6B8862212A4360023CE19 /* Main.storyboard */,
 				41A6B88E2212A4370023CE19 /* Info.plist */,
+				411E2345222FB3B80003CEE0 /* Int+Random.swift */,
 			);
 			path = Concetration;
 			sourceTree = "<group>";
@@ -151,6 +154,7 @@
 			files = (
 				41A6B8852212A4360023CE19 /* ViewController.swift in Sources */,
 				41A6B8832212A4360023CE19 /* AppDelegate.swift in Sources */,
+				411E2346222FB3B80003CEE0 /* Int+Random.swift in Sources */,
 				411E233F22246ACF0003CEE0 /* Concentration.swift in Sources */,
 				411E234222246B420003CEE0 /* Card.swift in Sources */,
 			);

@@ -10,11 +10,32 @@ import Foundation
 
 class Concentration {
     
-    var cards = [Card]()
+    private(set) var cards = [Card]()
     
-    var indexOfOneAndOnlyFaceUpCard: Int?
+    private var indexOfOneAndOnlyFaceUpCard: Int? {
+        get {
+            var foundIndex: Int?
+            for index in self.cards.indices {
+                if self.cards[index].isFaceUp {
+                    if foundIndex == nil {
+                        foundIndex = index
+                    } else  {
+                        return nil
+                    }
+                }
+            }
+            return foundIndex
+        }
+        set {
+            for index in self.cards.indices {
+                self.cards[index].isFaceUp = (index == newValue)
+            }
+        }
+    }
     
     func chooseCard(at index: Int) {
+        
+        assert(self.cards.indices.contains(index), "Concentration.chooseCard(at: \(index)): выбранный индекс не совпадает с картами")
         
         //Если уже не совпавшие
         if !self.cards[index].isMatched {
@@ -28,14 +49,8 @@ class Concentration {
                 }
                 //Текущую переварачиваем
                 self.cards[index].isFaceUp = true
-                self.indexOfOneAndOnlyFaceUpCard = nil
                 
             } else {
-                //Если обе перевернуты или ни одной
-                for flipDownIndex in self.cards.indices {
-                    self.cards[flipDownIndex].isFaceUp = false
-                }
-                self.cards[index].isFaceUp = true
                 self.indexOfOneAndOnlyFaceUpCard = index
             }
             
@@ -44,6 +59,9 @@ class Concentration {
     }
     
     init(numberOfPairsCard: Int) {
+        
+        assert(numberOfPairsCard > 0, "Количество пар карт, должно быть больше 0")
+        
         for _ in 0..<numberOfPairsCard {
             let card = Card()
             self.cards += [card, card]
