@@ -10,9 +10,38 @@ import Foundation
 
 class Concentration {
     
-    var cards = [Card]()
+    private(set) var cards = [Card]()
     
-    var indexOfOneAndOnlyFaceUpCard: Int?
+    private var indexOfOneAndOnlyFaceUpCard: Int? {
+        
+        get {
+            
+            var foundIndex: Int?
+            
+            for index in self.cards.indices {
+                
+                if self.cards[index].isFaceUp {
+                    if foundIndex == nil {
+                        foundIndex = index
+                    } else {
+                        return nil
+                    }
+                }
+                
+            }
+            
+            return foundIndex
+            
+        }
+        
+        set(newValue) {
+            
+            for index in self.cards.indices {
+                self.cards[index].isFaceUp = (index == newValue)
+            }
+            
+        }
+    }
     
     func chooseCard(at index: Int) {
         
@@ -28,14 +57,9 @@ class Concentration {
                 }
                 //Текущую переварачиваем
                 self.cards[index].isFaceUp = true
-                self.indexOfOneAndOnlyFaceUpCard = nil
                 
             } else {
-                //Если обе перевернуты или ни одной
-                for flipDownIndex in self.cards.indices {
-                    self.cards[flipDownIndex].isFaceUp = false
-                }
-                self.cards[index].isFaceUp = true
+                
                 self.indexOfOneAndOnlyFaceUpCard = index
             }
             

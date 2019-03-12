@@ -17,8 +17,6 @@ enum Emoji: String, CaseIterable {
     case love = "😍"
     case cool = "😎"
     case botan = "🤓"
-    
-    
 }
 
 class ViewController: UIViewController {
@@ -31,16 +29,20 @@ class ViewController: UIViewController {
         }
     }
     
-    lazy var game = Concentration(numberOfPairsCard: (self.cardButtons.count + 1) / 2)
+    lazy private var game = Concentration(numberOfPairsCard: self.numberOfPairsCard)
     
-    @IBOutlet var cardButtons: [UIButton]!
+    var numberOfPairsCard: Int {
+        return (self.cardButtons.count + 1) / 2
+    }
     
-    var emojiArray: [Emoji] = Emoji.allCases
-    var emoji: [Int: Emoji] = [:]
+    @IBOutlet private var cardButtons: [UIButton]!
     
-    @IBOutlet weak var countLabel: UILabel!
+    private var emojiArray: [Emoji] = Emoji.allCases
+    private var emoji: [Int: Emoji] = [:]
     
-    @IBAction func emojiButtonAction(_ sender: UIButton) {
+    @IBOutlet private weak var countLabel: UILabel!
+    
+    @IBAction private func emojiButtonAction(_ sender: UIButton) {
         
         if let index = self.cardButtons.firstIndex(of: sender) {
             self.game.chooseCard(at: index)
@@ -51,7 +53,7 @@ class ViewController: UIViewController {
         
     }
     
-    func updateViewModel() {
+    private func updateViewModel() {
         for index in self.cardButtons.indices {
             let button = self.cardButtons[index]
             let card = self.game.cards[index]
