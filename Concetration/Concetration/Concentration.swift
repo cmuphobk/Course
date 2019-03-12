@@ -12,13 +12,32 @@ class Concentration {
     
     var cards = [Card]()
     
-    var indexOfOneAndOnlyFaceUpCard: Int?
+    var indexOfOneAndOnlyFaceUpCard: Int? {
+        
+        get {
+            var foundIndex: Int?
+            for index in self.cards.indices {
+                if self.cards[index].isFaceUp {
+                    if foundIndex == nil {
+                        foundIndex = index
+                    } else {
+                        return nil
+                    }
+                }
+            }
+            return foundIndex
+        }
+        
+        set {
+            for index in self.cards.indices {
+                self.cards[index].isFaceUp = (index == newValue)
+            }
+        }
+    }
     
     func chooseCard(at index: Int) {
-        
         //Если уже не совпавшие
         if !self.cards[index].isMatched {
-            
             //Если есть предыдущи индекс и он не равен новому
             if let matchIndex = self.indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 //Если индексы перевернутой и текущей совпадают, матчим их
@@ -28,14 +47,7 @@ class Concentration {
                 }
                 //Текущую переварачиваем
                 self.cards[index].isFaceUp = true
-                self.indexOfOneAndOnlyFaceUpCard = nil
-                
             } else {
-                //Если обе перевернуты или ни одной
-                for flipDownIndex in self.cards.indices {
-                    self.cards[flipDownIndex].isFaceUp = false
-                }
-                self.cards[index].isFaceUp = true
                 self.indexOfOneAndOnlyFaceUpCard = index
             }
             

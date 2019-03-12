@@ -17,8 +17,6 @@ enum Emoji: String, CaseIterable {
     case love = "😍"
     case cool = "😎"
     case botan = "🤓"
-    
-    
 }
 
 class ViewController: UIViewController {
@@ -31,7 +29,11 @@ class ViewController: UIViewController {
         }
     }
     
-    lazy var game = Concentration(numberOfPairsCard: (self.cardButtons.count + 1) / 2)
+    lazy var game = Concentration(numberOfPairsCard: self.numberOfPairsCard)
+    
+    var numberOfPairsCard: Int {
+        return (self.cardButtons.count + 1) / 2
+    }
     
     @IBOutlet var cardButtons: [UIButton]!
     
