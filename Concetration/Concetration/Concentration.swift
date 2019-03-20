@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Concentration {
+struct Concentration {
     
     private(set) var cards = [Card]()
     
@@ -33,7 +33,7 @@ class Concentration {
         }
     }
     
-    func chooseCard(at index: Int) {
+    mutating func chooseCard(at index: Int) {
         
         assert(self.cards.indices.contains(index), "Concentration.chooseCard(at: \(index)): выбранный индекс не совпадает с картами")
         
@@ -43,7 +43,7 @@ class Concentration {
             //Если есть предыдущи индекс и он не равен новому
             if let matchIndex = self.indexOfOneAndOnlyFaceUpCard, matchIndex != index {
                 //Если индексы перевернутой и текущей совпадают, матчим их
-                if self.cards[matchIndex].identifier == self.cards[index].identifier {
+                if self.cards[matchIndex] == self.cards[index] {
                     self.cards[matchIndex].isMatched = true
                     self.cards[index].isMatched = true
                 }

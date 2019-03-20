@@ -17,7 +17,6 @@ enum Emoji: String, CaseIterable {
     case love = "😍"
     case cool = "😎"
     case botan = "🤓"
-
 }
 
 class ViewController: UIViewController {
@@ -39,7 +38,7 @@ class ViewController: UIViewController {
     @IBOutlet private var cardButtons: [UIButton]!
     
     private var emojiArray: [Emoji] = Emoji.allCases
-    private var emoji: [Int: Emoji] = [:]
+    private var emoji: [Card: Emoji] = [:]
     
     @IBOutlet private weak var countLabel: UILabel!
     
@@ -70,11 +69,11 @@ class ViewController: UIViewController {
     }
     
     private func emoji(for card: Card) -> String {
-        if self.emoji[card.identifier] == nil, self.emojiArray.count > 0 {
-            self.emoji[card.identifier] = self.emojiArray.remove(at: self.emojiArray.count.arc4random)
+        if self.emoji[card] == nil, self.emojiArray.count > 0 {
+            self.emoji[card] = self.emojiArray.remove(at: self.emojiArray.count.arc4random)
         }
         
-        return self.emoji[card.identifier]?.rawValue ?? "?"
+        return self.emoji[card]?.rawValue ?? "?"
     }
     
 }
