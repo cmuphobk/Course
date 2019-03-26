@@ -8,28 +8,19 @@
 
 import UIKit
 
-enum Emoji: String, CaseIterable {
-    case smile = "😀"
-    case cry = "😭"
-    case scream = "😱"
-    case angel = "😇"
-    case tease = "😛"
-    case love = "😍"
-    case cool = "😎"
-    case botan = "🤓"
-}
-
 class ViewController: UIViewController {
     
     private let countLabelText = "Счетчик нажатий:"
     
     private(set) var count = 0 {
         didSet {
-            self.countLabel.text = "\(countLabelText) \(self.count)"
+            self.configLabel(countLabelText: self.countLabelText, count: self.count, label: self.countLabel)
         }
     }
     
-    private lazy var game = Concentration(numberOfPairsCard: self.numberOfPairsCard)
+    private lazy var game: Concentration = { (numberOfPairsCard: Int) -> (Concentration) in
+        return Concentration(numberOfPairsCard: numberOfPairsCard)
+    }(self.numberOfPairsCard)
     
     var numberOfPairsCard: Int {
         return (self.cardButtons.count + 1) / 2
@@ -37,12 +28,18 @@ class ViewController: UIViewController {
     
     @IBOutlet private var cardButtons: [UIButton]!
     
-    private var emojiArray: [Emoji] = Emoji.allCases
-    private var emoji: [Card: Emoji] = [:]
+    private var emojiArray: String = "😀😎😇😍🤓"
+    private var emoji: [Card: String] = [:]
     
-    @IBOutlet private weak var countLabel: UILabel!
+    @IBOutlet private weak var countLabel: UILabel! {
+        didSet {
+            self.configLabel(countLabelText: self.countLabelText, count: self.count, label: self.countLabel)
+        }
+    }
     
     @IBAction private func emojiButtonAction(_ sender: UIButton) {
+        
+        self.count += 1
         
         if let index = self.cardButtons.firstIndex(of: sender) {
             self.game.chooseCard(at: index)
@@ -51,6 +48,15 @@ class ViewController: UIViewController {
             print("Unhandled Error!!!")
         }
         
+    }
+    
+    private func configLabel(countLabelText: String, count: Int, label: UILabel) {
+        let attributes: [NSAttributedString.Key : Any] = [
+            .strokeColor: UIColor.orange,
+            .strokeWidth: 5.0
+        ]
+        let attributedString = NSAttributedString(string: "\(countLabelText) \(count)", attributes: attributes)
+        label.attributedText = attributedString
     }
     
     private func updateViewModel() {
@@ -70,10 +76,10 @@ class ViewController: UIViewController {
     
     private func emoji(for card: Card) -> String {
         if self.emoji[card] == nil, self.emojiArray.count > 0 {
-            self.emoji[card] = self.emojiArray.remove(at: self.emojiArray.count.arc4random)
+            self.emoji[card] = String(self.emojiArray.remove(at: self.emojiArray.index(self.emojiArray.startIndex, offsetBy: self.emojiArray.count.arc4random)))
         }
         
-        return self.emoji[card]?.rawValue ?? "?"
+        return self.emoji[card] ?? "?"
     }
     
 }
