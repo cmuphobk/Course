@@ -8,6 +8,34 @@
 
 import UIKit
 
+protocol All {
+    static var all: String { get }
+}
+
+enum EmojiPackStandart: String, CaseIterable, All {
+    case smile = "😀"
+    case cool = "😎"
+    case angel = "😇"
+    case love = "😍"
+    case botan = "🤓"
+   
+    static var all: String {
+        return self.allCases.map{ $0.rawValue }.joined()
+    }
+}
+
+enum EmojiPackHaloween: String, CaseIterable, All {
+    case smile = "👿"
+    case cool = "👹"
+    case angel = "🤖"
+    case love = "👽"
+    case botan = "🎃"
+    
+    static var all: String {
+        return self.allCases.map{ $0.rawValue }.joined()
+    }
+}
+
 class ViewController: UIViewController {
     
     private let countLabelText = "Счетчик нажатий:"
@@ -28,7 +56,9 @@ class ViewController: UIViewController {
     
     @IBOutlet private var cardButtons: [UIButton]!
     
-    private var emojiArray: String = "😀😎😇😍🤓"
+    private var themeArray: [All.Type] = [EmojiPackStandart.self, EmojiPackHaloween.self]
+    
+    private lazy var emojiArray: String = self.themeArray[self.themeArray.count.arc4random].all
     private var emoji: [Card: String] = [:]
     
     @IBOutlet private weak var countLabel: UILabel! {
