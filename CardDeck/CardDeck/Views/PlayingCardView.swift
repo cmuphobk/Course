@@ -8,13 +8,34 @@
 
 import UIKit
 
+@IBDesignable
 class PlayingCardView: UIView {
     
     //MARK: - Stored properies
     
-    var rank: Int = 5
-    var suit: String = "♥️"
-    var isFaceUp: Bool = true
+    @IBInspectable
+    var rank: Int = 9 {
+        didSet {
+            self.setNeedsLayout()
+            self.setNeedsDisplay()
+        }
+    }
+    
+    @IBInspectable
+    var suit: String = "♥️" {
+        didSet {
+            self.setNeedsLayout()
+            self.setNeedsDisplay()
+        }
+    }
+    
+    @IBInspectable
+    var isFaceUp: Bool = true {
+        didSet {
+            self.setNeedsLayout()
+            self.setNeedsDisplay()
+        }
+    }
     
     //MARK: - Computed properies
     
@@ -25,20 +46,30 @@ class PlayingCardView: UIView {
     //MARK: - UI
     
     private lazy var upperLeftCornerLabel: UILabel = self.createCornerLabel()
-    private lazy var lowerLeftCornerLabel: UILabel = self.createCornerLabel()
+    private lazy var lowerRightCornerLabel: UILabel = self.createCornerLabel()
     
     //MARK: - Lifecycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        //Configure Left Top Label
         self.configureCornerLabel(self.upperLeftCornerLabel)
         
         self.upperLeftCornerLabel.frame.origin =
             self.bounds.origin.offsetBy(dx: self.cornerOffset,
                                         dy: self.cornerOffset)
         
-        //FIXME: - Сделать нижий лейбл
+        //Configure Right Bottom Label
+        self.configureCornerLabel(self.lowerRightCornerLabel)
+        
+        self.lowerRightCornerLabel.transform = CGAffineTransform.identity
+            .translatedBy(x: self.lowerRightCornerLabel.frame.size.width, y: self.lowerRightCornerLabel.frame.size.height)
+            .rotated(by: CGFloat.pi)
+        
+        self.lowerRightCornerLabel.frame.origin = CGPoint(x: self.bounds.maxX, y: self.bounds.maxY)
+            .offsetBy(dx: -self.cornerOffset, dy: -self.cornerOffset)
+            .offsetBy(dx: -self.lowerRightCornerLabel.frame.width, dy: -self.lowerRightCornerLabel.frame.height)
         
     }
     
@@ -47,9 +78,31 @@ class PlayingCardView: UIView {
         let roundedRect = UIBezierPath(roundedRect: self.bounds,
                                        cornerRadius: self.cornerRadius)
         roundedRect.addClip()
-        UIColor.white.setFill()
-        roundedRect.fill()
+        
+        if self.isFaceUp {
+            
+            UIColor.white.setFill()
+            roundedRect.fill()
+            
+            if let faceCardImage = UIImage(named: self.rankString + self.suit, in: Bundle(for: self.classForCoder), compatibleWith: self.traitCollection) {
+                faceCardImage.draw(in: self.bounds.zoom(by: SizeRatio.faceCardImageSizeToBoundsSize))
+            } else {
+                self.drawPips()
+            }
+        } else {
+            
+            UIColor.red.setFill()
+            roundedRect.fill()
+            
+            if let cardBackImage = UIImage(named: "cardback", in: Bundle(for: self.classForCoder), compatibleWith: self.traitCollection) {
+                cardBackImage.draw(in: self.bounds)
+            }
+        }
+    }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        self.setNeedsDisplay()
+        self.setNeedsLayout()
     }
     
     //MARK: - Private
@@ -79,6 +132,60 @@ class PlayingCardView: UIView {
         
         return NSAttributedString(string: string,
                                   attributes: [.paragraphStyle: pargraphStyle, .font: font])
+    }
+    
+    private func drawPips() {
+        
+        let pipsPerRowForRank = [[0], [1], [1,1], [1,1,1], [2,2], [2,1,2], [2,2,2], [2,1,2,2], [2,2,2,2], [2,2,1,2,2], [2,2,2,2,2]]
+        
+        if pipsPerRowForRank.indices.contains(self.rank) {
+            let pipsPerRow = pipsPerRowForRank[self.rank]
+            
+            let offsetSize = CGSize(width: self.cornerOffset, height: self.cornerOffset)
+            let stringSize = CGSize(width: self.cornerString.size().width, height: self.cornerString.size().height / 2)
+            
+            //Фрейм для pips
+            var pipRect = self.bounds.inset(by: offsetSize).inset(by: stringSize)
+            
+            let pipString = self.createPipString(pipsPerRowForRank, thatFits: pipRect)
+            let pipRowSpacing = pipRect.size.height / CGFloat(pipsPerRow.count)
+            pipRect.size.height = pipString.size().height
+            pipRect.origin.y += (pipRowSpacing - pipRect.size.height) / 2
+            
+            for pipCount in pipsPerRow {
+                switch pipCount {
+                case 1:
+                    pipString.draw(in: pipRect)
+                case 2:
+                    pipString.draw(in: pipRect.leftHalf)
+                    pipString.draw(in: pipRect.rightHalf)
+                default:
+                    break
+                }
+                pipRect.origin.y += pipRowSpacing
+            }
+            
+        }
+    }
+    
+    func createPipString(_ pipsPerRowForRank: [[Int]], thatFits pipRect: CGRect) -> NSAttributedString {
+        
+        let maxVerticalPipCount = CGFloat(pipsPerRowForRank.reduce(0) { max($1.count, $0)})
+        let maxHorizontalPipCount = CGFloat(pipsPerRowForRank.reduce(0) { max($1.max() ?? 0, $0)})
+        
+        let verticalPipRowSpacing = pipRect.size.height / maxVerticalPipCount
+        
+        let attemptedPipString = self.centeredAttributedString(self.suit, fontSize: verticalPipRowSpacing)
+        
+        let probablyOkayPipStringFontSize = verticalPipRowSpacing / (attemptedPipString.size().height / verticalPipRowSpacing)
+        let probablyOkayPipString = self.centeredAttributedString(self.suit, fontSize: probablyOkayPipStringFontSize)
+        
+        if probablyOkayPipString.size().width > pipRect.size.width / maxHorizontalPipCount {
+            return self.centeredAttributedString(self.suit, fontSize: probablyOkayPipStringFontSize /
+                (probablyOkayPipString.size().width / (pipRect.size.width / maxHorizontalPipCount)))
+        } else {
+            return probablyOkayPipString
+        }
     }
     
 }
